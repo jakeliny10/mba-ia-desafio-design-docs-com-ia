@@ -1,5 +1,11 @@
-# Architectural Decision Records
+# Índice de ADRs
 
-Este diretório armazena os ADRs (Architectural Decision Records) do projeto.
-Cada decisão arquitetural relevante deve ser registrada aqui em arquivos individuais,
-nomeados sequencialmente (por exemplo `0001-titulo-da-decisao.md`).
+- [ADR-001 — Outbox no MySQL](ADR-001-outbox-no-mysql.md)
+- [ADR-002 — Retry limitado e DLQ persistida](ADR-002-retry-e-dead-letter.md)
+- [ADR-003 — HMAC-SHA256 e secret por endpoint](ADR-003-hmac-por-endpoint.md)
+- [ADR-004 — At-least-once e identificação estável](ADR-004-at-least-once-com-event-id.md)
+- [ADR-005 — Worker separado com polling](ADR-005-worker-separado-em-polling.md)
+- [ADR-006 — Reuso dos padrões existentes](ADR-006-reuso-dos-padroes.md)
+- [ADR-007 — Snapshot do evento na inserção](ADR-007-snapshot-do-evento.md)
+
+Decisões aceitas na reunião; pendências de implementação ficam no [RFC](../RFC.md) e no [FDD](../FDD.md).
