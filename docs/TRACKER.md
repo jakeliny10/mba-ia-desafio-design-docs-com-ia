@@ -1,10 +1,6 @@
 # Tracker de rastreabilidade
 
-Cada linha identifica uma decisão, requisito, restrição, alternativa, consequência, proposta derivada ou lacuna. IDs adicionais separam origens diferentes dentro do mesmo trecho. Exemplos ilustrativos (UUIDs, datas e valores fictícios) pertencem ao contrato identificado; não são novos requisitos nem dados reais. Metadados e relato do processo são verificados no README e na revisão, não atribuídos à reunião como requisitos.
-
-**Como interpretar:** `TRANSCRICAO` indica a fala que afirma a decisão ou fundamenta uma derivação; `CODIGO` aponta o arquivo real que fundamenta integração/compatibilidade. Proposta, consequência e lacuna não são decisões aceitas. A fonte de uma lacuna indica o assunto que ficou incompleto — não uma fala literal que tenha declarado o problema. Nenhum encoding, política HTTP, solução de crash ou restrição adicional foi convertido em decisão fechada.
-
-**Cobertura:** inventário explícito de itens técnicos/produto e suas derivações nos documentos, incluindo linhas de erros, métricas e alternativas dos ADRs. Cobertura é aferida por IDs, complementada por leitura semântica dos parágrafos; não apenas pela presença dos IDs originais. A checklist e os limites da auditoria estão em [REVISAO.md](REVISAO.md).
+A tabela relaciona os itens documentados às falas da reunião ou aos arquivos do código. `TRANSCRICAO` identifica timestamp e participante; `CODIGO` identifica o caminho do arquivo. Propostas derivadas e questões em aberto são indicadas na coluna Tipo.
 
 | ID | Documento | Tipo | Conteúdo (resumo) | Fonte | Localização |
 |---|---|---|---|---|---|
@@ -61,7 +57,7 @@ Cada linha identifica uma decisão, requisito, restrição, alternativa, consequ
 | FDD-OBS-01 | docs/FDD.md | Proposta derivada | Usar Pino para logs estruturados do ciclo de entrega e auditoria de replay; correlacionar event_id, webhook_id, order_id e usuário do replay. | TRANSCRICAO | [09:29] Bruno |
 | FDD-INT-01 | docs/FDD.md | Integração | src/modules/orders/order.service.ts: Estender changeStatus antes do retorno da transação com publishWebhookEvent(tx, refreshed, from, to); preservar validação, estoque e auditoria. | CODIGO | src/modules/orders/order.service.ts |
 | FDD-INT-02 | docs/FDD.md | Integração | src/modules/orders/order.status.ts: Reutilizar máquina de estados e regras de débito/reposição; filtro recebe enum válido, sem criar transições. | CODIGO | src/modules/orders/order.status.ts |
-| FDD-INT-03 | docs/FDD.md | Integração | prisma/schema.prisma: Planejar modelos de configuração/outbox/DLQ/histórico e relações; manter UUID Char(36), MySQL e migrações futuras. Nenhuma migration é entregue aqui. | CODIGO | prisma/schema.prisma |
+| FDD-INT-03 | docs/FDD.md | Integração | prisma/schema.prisma: Planejar modelos de configuração/outbox/DLQ/histórico e relações; manter UUID Char(36), MySQL e migrações futuras. | CODIGO | prisma/schema.prisma |
 | FDD-INT-04 | docs/FDD.md | Integração | src/config/database.ts: Worker usa cliente próprio por processo no mesmo DATABASE_URL. O singleton carregado em outro processo já é outra instância; evitar criar dois pools acidentalmente. | CODIGO | src/config/database.ts |
 | FDD-INT-05 | docs/FDD.md | Integração | src/app.ts: Construir dependências do módulo via buildControllers e montar rotas sob /api/v1; não iniciar worker em buildApp. | CODIGO | src/app.ts |
 | FDD-INT-06 | docs/FDD.md | Integração | src/routes/index.ts: Adicionar futuramente routers de webhooks e replay administrativo ao agregador. | CODIGO | src/routes/index.ts |
@@ -72,7 +68,7 @@ Cada linha identifica uma decisão, requisito, restrição, alternativa, consequ
 | FDD-INT-11 | docs/FDD.md | Integração | src/shared/logger/index.ts: Reusar Pino; redaction atual não cobre secrets de webhook. Evitar logging dessas credenciais. | CODIGO | src/shared/logger/index.ts |
 | FDD-INT-12 | docs/FDD.md | Integração | src/shared/http/response.ts: Reusar paginated na proposta de listagem/histórico. | CODIGO | src/shared/http/response.ts |
 | FDD-INT-13 | docs/FDD.md | Integração | src/server.ts: Referência para nova entry point proposta src/worker.ts; novo arquivo ainda não existe. | CODIGO | src/server.ts |
-| FDD-INT-14 | docs/FDD.md | Integração | tests/orders.test.ts: Referência para futura validação da transação e regressão dos pedidos; não modificar testes nesta entrega. | CODIGO | tests/orders.test.ts |
+| FDD-INT-14 | docs/FDD.md | Integração | tests/orders.test.ts: Referência para validação da transação e regressão dos pedidos. | CODIGO | tests/orders.test.ts |
 | FDD-INT-15 | docs/FDD.md | Integração | package.json: Preservar Node >=20, TypeScript ESM e dependências atuais; npm run worker é script futuro, ainda inexistente. | CODIGO | package.json |
 | FDD-DEP-01 | docs/FDD.md | Dependência | Mesmo MySQL e stack do projeto; PrismaClient separado por processo e DATABASE_URL comum. | TRANSCRICAO | [09:30] Bruno |
 | FDD-ACE-01 | docs/FDD.md | Critério derivado | Verificar commit conjunto de pedido/histórico/estoque/outbox, rollback por falha de inserção e ausência de outbox para filtro sem interesse. | TRANSCRICAO | [09:40] Bruno |
@@ -152,7 +148,7 @@ Cada linha identifica uma decisão, requisito, restrição, alternativa, consequ
 | FDD-RES-02 | docs/FDD.md | Resiliência derivada | Snapshot e ID estáveis nos retries; falha externa não reverte pedido já commitado. | TRANSCRICAO | [09:25] Diego |
 | FDD-NOVO-01 | docs/FDD.md | Integração futura | Módulo webhooks e entry point worker são arquivos novos propostos, não arquivos existentes citados como fonte. | TRANSCRICAO | [09:28] Bruno |
 | FDD-DEP-02 | docs/FDD.md | Dependência | MySQL escolhido sem Redis; consumidor valida assinatura/deduplica, com revisão de segurança antes do deploy. | TRANSCRICAO | [09:07] Diego |
-| FDD-TEST-01 | docs/FDD.md | Validação derivada | Plano futuro de testes ponta a ponta e segurança, sem alegar execução de feature inexistente. | TRANSCRICAO | [09:46] Larissa |
+| FDD-TEST-01 | docs/FDD.md | Validação derivada | Plano de testes ponta a ponta e revisão de segurança. | TRANSCRICAO | [09:46] Larissa |
 | FDD-PEND-01 | docs/FDD.md | Pendência | Síntese das lacunas derivadas do processamento/retry; não são requisitos novos aprovados. | TRANSCRICAO | [09:48] Larissa |
 | FDD-SCHEMA-01 | docs/FDD.md | Proposta derivada | UUID e enum OrderStatus reutilizados nos schemas; restrições não fechadas permanecem abertas. | CODIGO | src/modules/orders/order.schemas.ts |
 | FDD-SCHEMA-02 | docs/FDD.md | Proposta derivada | Mapeamento dos campos reais Order para snapshot; estados da transição são explícitos. | CODIGO | prisma/schema.prisma |
