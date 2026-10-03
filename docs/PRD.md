@@ -9,18 +9,20 @@ Este documento distingue **decisão fechada** na reunião, **proposta derivada**
 **PRD-PROB-01** — Atlas Comercial, MaxDistribuição e Nova Cargo fazem polling de pedidos, com integração lenta e cara; Atlas sinalizou possível migração sem entrega até o prazo solicitado.
 
 ## Público-alvo e cenários de uso
-**PRD-PUB-01** — Clientes B2B integrando seus sistemas ao OMS; usuários autenticados representam esses clientes, sem customer implícito no JWT.
+**PRD-PUB-01** — Clientes B2B integrando seus sistemas ao OMS; usuários autenticados representam esses clientes, com customer informado explicitamente na requisição, conforme correção de Larissa.
 
 **PRD-USO-01** — Consumidor escolhe receber apenas SHIPPED e DELIVERED, e consulta detalhes do pedido pela API quando necessário.
 
-O cenário de consulta posterior deriva de [09:43] Diego. Operação administrativa recupera notificações que esgotaram retentativas, e o cliente consulta entregas para diagnosticar falhas.
+**PRD-PUB-02** — O cenário de consulta posterior deriva de [09:43] Diego. Operação administrativa recupera notificações que esgotaram retentativas, e o cliente consulta entregas para diagnosticar falhas.
 
 ## Objetivos e métricas de sucesso
 **PRD-MET-01** — Notificação em menos de 10 segundos para destinatário disponível; medir intervalo entre mudança confirmada e recepção no cenário saudável.
 
 Meta quantitativa de produto, não SLA incondicional. Percentil, carga e janela de avaliação não foram definidos. Medir com receptor controlado e depois observar operação; atraso de retries não representa o cenário saudável.
 
-**PRD-MET-02** — Planejamento estimado de três sprints, incluindo revisão de segurança; Atlas pede fim de novembro, sem ano especificado na transcrição.
+**PRD-MET-02** — Planejamento estimado de três sprints, incluindo revisão de segurança.
+
+**PRD-PRAZO-01** — Atlas pede fim de novembro; o ano não foi especificado na transcrição.
 
 ## Escopo
 ### Incluso
@@ -93,14 +95,16 @@ Decisões detalhadas: [ADRs](RFC.md#decisões-relacionadas). A contagem dos retr
 **PRD-DEP-02** — Reservar ao menos dois dias úteis para revisão de HMAC e geração de secret por Sofia antes do deploy.
 
 ## Riscos e mitigação
-Probabilidades abaixo são avaliações qualitativas derivadas para planejamento, **não estimativas declaradas na reunião**. Não há dados para quantificar frequência.
+Probabilidade é descrita pela evidência disponível, sem inventar classificação baixa/média/alta ou porcentagem. A reunião reconhece os três riscos, mas não mede frequência. As mitigações são derivadas das decisões citadas.
 
 | ID | Risco | Probabilidade estimada | Impacto | Mitigação derivada | Origem |
 |---|---|---|---|---|---|
-| PRD-RISK-01 | Cliente indisponível ou lento | Média | Atraso/falha de notificação | Timeout, retries e DLQ com replay | [09:15] Diego |
-| PRD-RISK-02 | Vazamento de secret | Média | Falsificação de notificações daquele endpoint | Secret individual, rotação e revisão de segurança | [09:22] Sofia |
-| PRD-RISK-03 | Duplicação de entrega | Média | Efeito duplicado no consumidor | event_id e orientação de deduplicação | [09:24] Diego |
+| PRD-RISK-01 | Cliente indisponível ou lento | Possível; manutenção de duas horas já ocorreu, frequência não medida ([09:16] Diego) | Atraso/falha de notificação | Timeout, retries e DLQ com replay | [09:15] Diego |
+| PRD-RISK-02 | Vazamento de secret | Possível; há antecedente de vazamento em log, frequência não medida ([09:22] Diego) | Falsificação de notificações daquele endpoint | Secret individual, rotação e revisão de segurança | [09:22] Sofia |
+| PRD-RISK-03 | Duplicação de entrega | Possível por desenho at-least-once, frequência não medida ([09:24] Diego) | Efeito duplicado no consumidor | event_id e orientação de deduplicação | [09:24] Diego |
 
+
+Mitigações da tabela: **PRD-RISK-01-MIT**, **PRD-RISK-02-MIT**, **PRD-RISK-03-MIT**.
 
 ## Critérios de aceitação
 
@@ -117,4 +121,4 @@ Probabilidades abaixo são avaliações qualitativas derivadas para planejamento
 ## Estratégia de testes e validação
 **PRD-TEST-01** — Validar integração ponta a ponta entre mudança de status, filtro e receptor HTTP, cobrindo sucesso, indisponibilidade e replay; incluir revisão de segurança no fechamento.
 
-Usar receptor controlado para medir latência e comparar cadastro/filtro/histórico. Exercitar duplicatas e orientação ao consumidor. O plano técnico de atomicidade, timeout, HMAC e rotação está no [FDD](FDD.md#critérios-de-aceite-técnicos-e-estratégia-de-validação). Nenhum teste da feature foi executado, pois não há implementação nesta entrega.
+Usar receptor controlado para medir latência e comparar cadastro/filtro/histórico. Exercitar duplicatas e orientação ao consumidor. O plano técnico de atomicidade, timeout, HMAC e rotação está no [FDD](FDD.md#estratégia-de-testes-e-validação). Nenhum teste da feature foi executado, pois não há implementação nesta entrega.

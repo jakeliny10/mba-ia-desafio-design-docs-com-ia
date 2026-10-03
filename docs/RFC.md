@@ -1,7 +1,7 @@
 # RFC — Webhooks de Notificação de Pedidos
 
 ## Metadados
-Autor: Jakeliny, com apoio de Codex. Status: **proposta para revisão; não submetida externamente**. Elaboração: 2026-10-03. Revisores propostos, participantes da reunião: Larissa (Tech Lead), Marcos (PM), Bruno (Pedidos), Diego (Plataforma), Sofia (Segurança). Decisões centrais já foram fechadas na reunião; este RFC abre a revisão da consolidação e das lacunas.
+Autor: Jakeliny, com apoio de Codex. Status: **Em revisão documental — proposta disponibilizada neste fork; aprovação pendente**. Elaboração: 2026-10-03. Revisores indicados (participantes da reunião): Larissa (Tech Lead), Marcos (PM), Bruno (Pedidos), Diego (Plataforma), Sofia (Segurança). Decisões centrais já foram fechadas na reunião; este RFC abre a revisão da consolidação e das lacunas. Publicar o RFC não equivale a notificar os revisores nem a obter aprovação; nenhuma revisão externa foi simulada.
 
 Este documento distingue **decisão fechada** na reunião, **proposta derivada** para revisão e **pendência** sem definição. Exemplos são ilustrativos, não dados de produção. IDs remetem ao [Tracker](TRACKER.md). A reunião não informa data completa; a data dos documentos é a de elaboração, não a da decisão.
 
@@ -13,12 +13,12 @@ A proposta reaproveita a stack do OMS, autentica os callbacks por HMAC e admite 
 ## Contexto e problema
 **RFC-CTX-01** — Atlas Comercial, MaxDistribuição e Nova Cargo consultam pedidos periodicamente; desejam notificações abaixo de dez segundos e a Atlas sinalizou risco de migração.
 
-A expectativa de latência foi esclarecida em [09:02] Marcos. A transação já altera status, histórico e estoque. Acoplar a disponibilidade externa a essa transação comprometeria o serviço de pedidos.
+**RFC-CTX-02** — A expectativa de latência foi esclarecida em [09:02] Marcos. A transação já altera status, histórico e estoque. Acoplar a disponibilidade externa a essa transação comprometeria o serviço de pedidos.
 
 ## Proposta técnica
 **RFC-PROP-02** — Produzir snapshot de evento para endpoints ativos interessados no novo status; filtrar antes de persistir, garantindo commit ou rollback junto ao pedido.
 
-O snapshot fechado em [09:52] Larissa mantém o significado do evento mesmo após novas mudanças. O worker consulta pendências antigas em batches pequenos a cada 2s e envia o HTTP fora da transação. Uma instância é o limite desta fase; não há garantia de ordering global nem solução de escalabilidade paralela.
+**RFC-PROP-04** — O snapshot fechado em [09:52] Larissa mantém o significado do evento mesmo após novas mudanças. O worker consulta pendências antigas em batches pequenos a cada 2s e envia o HTTP fora da transação. **RFC-PROP-05**, **RFC-PROP-06** — Uma instância é o limite desta fase; não há garantia de ordering global nem solução de escalabilidade paralela.
 
 **RFC-PROP-03** — HMAC-SHA256 com secret por endpoint, HTTPS obrigatório, rotação com sobreposição de 24h e X-Event-Id para deduplicação do consumidor.
 
@@ -53,7 +53,7 @@ Retentativas seguem os intervalos declarados na reunião, com DLQ separada e rep
 
 **RFC-RISK-02** — Destino lento e backlog podem impedir a expectativa abaixo de 10s: polling não é garantia de latência fim a fim; timeout é 10s por chamada.
 
-A atomicidade preserva consistência, mas torna a inserção de eventos parte do sucesso da mudança de status. Duplicatas precisam ser explicitadas aos consumidores. A revisão de segurança precede deploy, com dois dias úteis reservados para Sofia ([09:46] Sofia). O planejamento é de três sprints ([09:47] Larissa), sem converter a estimativa em garantia.
+A atomicidade preserva consistência, mas torna a inserção de eventos parte do sucesso da mudança de status. Duplicatas precisam ser explicitadas aos consumidores. **RFC-DEP-01**, **RFC-DEP-02** — A revisão de segurança precede deploy, com dois dias úteis reservados para Sofia ([09:46] Sofia). O planejamento é de três sprints ([09:47] Larissa), sem converter a estimativa em garantia.
 
 ## Decisões relacionadas
 - [ADR-001 — Outbox no MySQL](adrs/ADR-001-outbox-no-mysql.md)

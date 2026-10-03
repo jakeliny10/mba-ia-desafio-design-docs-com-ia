@@ -3,7 +3,7 @@
 ## Sobre o desafio
 Esta entrega transforma a reunião sobre notificações de pedidos e a leitura de um OMS Node.js/TypeScript em um pacote de design docs rastreável. O objetivo é permitir que engenharia revise a proposta e inicie implementação sem atribuir à reunião decisões que ela não tomou.
 
-A entrega é exclusivamente documental. A transcrição, src/, prisma/, tests/ e configurações foram preservados. Enunciado original e código base: [repositório do desafio](https://github.com/devfullcycle/mba-ia-desafio-design-docs-com-ia). Fork: [jakeliny10/mba-ia-desafio-design-docs-com-ia](https://github.com/jakeliny10/mba-ia-desafio-design-docs-com-ia).
+A entrega é exclusivamente documental. A transcrição, src/, prisma/, tests/ e configurações foram preservados. Enunciado preservado: [docs/ENUNCIADO.md](docs/ENUNCIADO.md). Código base: [repositório do desafio](https://github.com/devfullcycle/mba-ia-desafio-design-docs-com-ia). Fork: [jakeliny10/mba-ia-desafio-design-docs-com-ia](https://github.com/jakeliny10/mba-ia-desafio-design-docs-com-ia).
 
 ## Ferramentas de IA utilizadas
 - Codex: leitura da transcrição e do código, identificação de decisões e lacunas, redação e revisão dos documentos.
@@ -18,7 +18,7 @@ A entrega é exclusivamente documental. A transcrição, src/, prisma/, tests/ e
 5. Auditoria documental de seções, IDs, fontes, timestamps, paths e links, e comparação Git para preservar arquivos protegidos. Não executar testes da feature sem implementação.
 
 ## Prompts customizados
-Os prompts abaixo registram as instruções dirigidas usadas na composição e revisão desta entrega; não representam uma ferramenta adicional nem resultados de uma reunião com o time.
+Os prompts abaixo são instruções customizadas formuladas/adaptadas para orientar esta produção e sua revisão. Registram o método de trabalho; não são logs integrais de conversas nem alegações de feedback dos participantes da reunião.
 
 ```text
 Leia TRANSCRICAO.md e o código do OMS. Separe decisão fechada, requisito
@@ -43,13 +43,14 @@ tracing distribuído e prefixo WEBHOOK_ não é aplicado automaticamente a Zod.
 ```
 
 ## Iterações e ajustes
-Foram três ciclos principais de análise/redação/revisão, sem simular feedback humano ou aprovação da equipe:
+Houve duas rodadas principais de redação: produção inicial e revisão crítica solicitada pelo aluno. Dentro delas, o trabalho percorreu quatro etapas: contextualização, redação, checagem estrutural e revisão semântica. Não se afirma que houve três a cinco gerações independentes nem aprovação da equipe.
 
-1. Contextualização: a formulação inicial de “mesmo Prisma client” foi refinada para instância própria por processo após confronto de [09:30] Bruno com src/config/database.ts. O JWT foi verificado: customer não vem do token.
-2. Redação crítica: a promessa genérica de retry/ordering foi desdobrada em lacunas concretas. Cinco intervalos não cabem em cinco tentativas totais; created_at não impede ultrapassagem durante retry. Os documentos preservam decisões e pedem revisão dos detalhes.
-3. Revisão de contratos: erros Zod e auth foram preservados como compartilhados; WEBHOOK_* é contrato de domínio. Endpoints não ditos literalmente e status HTTP foram rotulados como propostas. Tracing foi descrito como pendência, e não como infraestrutura existente. IDs e caminhos foram auditados.
+1. Produção inicial: os documentos registraram a ambiguidade de cinco tentativas versus cinco intervalos, os limites de ordering sob retry e a ausência de customer no JWT. Esses pontos foram confrontados com a transcrição e o código, preservando decisões fechadas sem preencher lacunas silenciosamente.
+2. Ajuste concreto do tracker: a primeira versão tinha 115 registros, mas grupos como erros, métricas e alternativas dos ADRs eram amplos demais. Na revisão crítica, foram desdobrados em itens com fontes específicas; cada erro e métrica passou a ter ID próprio. A auditoria inicial verificava presença de IDs e arquivos, mas não demonstrava por si só cobertura semântica de 80%.
+3. Ajuste concreto de riscos e fontes: a primeira versão dizia probabilidade “média” sem evidência para essa classificação. A revisão substituiu-a por possibilidade reconhecida e frequência não medida, com antecedentes da reunião. Separou também a fonte do prazo de novembro da estimativa de três sprints, e o source de PATCH parcial da paginação.
+4. Ajuste concreto de integração e processo: o tracing passou a relacionar o requestId real da API aos IDs de evento, sem inventar stack distribuída; GET/DELETE ganharam exemplos HTTP sem bodies fictícios. O README deixou de apresentar etapas internas como ciclos independentes. O enunciado original foi preservado e os 31 critérios receberam evidência na checklist.
 
-Esses ajustes foram conduzidos pelo Codex durante a produção; não há alegação de que o aluno ou participantes tenham revisado cada documento. RFC permanece para revisão; não foi enviado aos participantes.
+Os ajustes foram produzidos pelo Codex sob a orientação do aluno, incluindo o pedido explícito de revisão criteriosa. Não há alegação de revisão de conteúdo pelos participantes. O RFC está disponível para revisão no fork; não foi enviado diretamente aos revisores nem aprovado por eles.
 
 ## Como navegar a entrega
 Ordem sugerida para um leitor novo:
@@ -60,10 +61,14 @@ Ordem sugerida para um leitor novo:
 4. [FDD](docs/FDD.md): fluxos, contratos propostos, erros e integração com arquivos reais.
 5. [Tracker](docs/TRACKER.md): origem de cada ID.
 6. [Transcrição preservada](TRANSCRICAO.md): fonte primária da reunião.
+7. [Revisão final](docs/REVISAO.md): critérios, evidências e limites.
+8. [Enunciado original](docs/ENUNCIADO.md): cópia exata do README da base.
 
 As pendências do FDD devem ser resolvidas na revisão técnica antes dos respectivos componentes serem codificados. Esta entrega não altera nem implementa a aplicação.
 
 ## Validação da entrega
-A auditoria documental confirmou sete ADRs, doze requisitos funcionais, sete endpoints de gestão com exemplos, 115 IDs únicos no tracker, 80,9% de fontes TRANSCRICAO e 22 registros CODIGO. Foram conferidos timestamps/falantes contra a transcrição, existência dos arquivos citados pelo tracker, links locais, blocos de código Markdown e preservação dos arquivos protegidos por comparação Git. A verificação é estrutural e de referência; não substitui a revisão técnica das propostas e lacunas.
+A revisão confirmou sete ADRs cobrindo as seis decisões principais, doze requisitos funcionais, sete endpoints de gestão (quatro com exemplos JSON de request/response) e sete códigos WEBHOOK_* na matriz, além do erro compartilhado de customer ausente. O tracker possui **222 registros**, dos quais **187 (84,2%)** usam TRANSCRICAO e **35** usam CODIGO.
 
-A cobertura é organizada por grupos semânticos identificados: explicações e exemplos pertencem ao ID da seção. Não foi calculada uma porcentagem automática sobre cada frase; detalhes não decididos continuam rotulados para revisão.
+Foram conferidos seções obrigatórias, timestamps/falantes, origem semântica das decisões, arquivos reais, links/âncoras locais, tabelas, JSON dos exemplos e diferença Git contra o commit base `e7f6311`. As verificações de preservação abrangem todos os arquivos originais fora de README/docs, incluindo configurações, src/, prisma/, tests/ e TRANSCRICAO.md.
+
+A [checklist](docs/REVISAO.md) documenta os 31 critérios de aceite e os limites da revisão. O inventário explícito registra todos os IDs; isso não transforma inferências técnicas em decisões aprovadas. Detalhes não fechados continuam marcados como propostas ou pendências. O material do curso com modelos próprios não foi fornecido; foram seguidas as seções do enunciado. Não foram executados testes da aplicação ou da feature nesta entrega documental.
